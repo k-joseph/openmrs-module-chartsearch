@@ -140,17 +140,7 @@ public class GeneratingJson {
 			
 			jsonToReturn.put("search_phrase", searchPhrase);
 			
-			//adding facets to the JSON results object
-			JSONArray arr_of_facets = new JSONArray();
-			JSONObject facet = new JSONObject();
-			LinkedList<Count> facets = new LinkedList<Count>();
-			
-			facets.addAll(ChartSearchSearcher.getFacetFieldValueNamesAndCounts());
-			for (int i = facets.indexOf(facets.getFirst()); i <= facets.indexOf(facets.getLast()); i++) {
-				facet.put("facet", generateFacetsJson(facets.get(i)));
-				arr_of_facets.add(facet);
-			}
-			jsonToReturn.put("facets", arr_of_facets);
+			addFacetsToJsonToReturn(jsonToReturn);
 			
 			//add failed privileges to json to be returned to the view
 			jsonToReturn.put("failedPrivileges", failedPrivilegeMessages);
@@ -161,6 +151,27 @@ public class GeneratingJson {
 		}*/
 		
 		return jsonToReturn.toString();
+	}
+	
+	/**
+	 * Adds Facets to be used to drill down/filter results, A Facet has a name and counts returned
+	 * in the results
+	 * 
+	 * @should
+	 * @param jsonToReturn
+	 */
+	private static void addFacetsToJsonToReturn(JSONObject jsonToReturn) {
+		//adding facets to the JSON results object
+		JSONArray arr_of_facets = new JSONArray();
+		JSONObject facet = new JSONObject();
+		LinkedList<Count> facets = new LinkedList<Count>();
+		
+		facets.addAll(ChartSearchSearcher.getFacetFieldValueNamesAndCounts());
+		for (int i = facets.indexOf(facets.getFirst()); i <= facets.indexOf(facets.getLast()); i++) {
+			facet.put("facet", generateFacetsJson(facets.get(i)));
+			arr_of_facets.add(facet);
+		}
+		jsonToReturn.put("facets", arr_of_facets);
 	}
 	
 	public static JSONObject createJsonObservation(Obs obs) {
@@ -410,6 +421,12 @@ public class GeneratingJson {
 		return encounters;
 	}
 	
+	/**
+	 * @should generate names and counts for each Count
+	 * @should return a valid FacetField.Count object
+	 * @param facet
+	 * @return counts
+	 */
 	private static JSONObject generateFacetsJson(Count facet) {
 		JSONObject counts = new JSONObject();
 		counts.put("name", facet.getName());

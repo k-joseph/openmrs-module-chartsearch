@@ -84,7 +84,8 @@ public class ChartSearchIndexer {
 	/* 
 	 * @return null if something going wrong
 	 */
-	public StatisticsInfo getStatistics() {
+	@SuppressWarnings("unchecked")
+    public StatisticsInfo getStatistics() {
 		SolrServer solrServer = SolrSingleton.getInstance().getServer();
 		ModifiableSolrParams params = new ModifiableSolrParams();
 		//TODO take path from config
